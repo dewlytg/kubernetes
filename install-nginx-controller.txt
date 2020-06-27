@@ -1,5 +1,5 @@
 1. nginx-controller服务其实就是kubernetes中的nginx，可以完成代理工作，创建完不同的服务，必须创建nignx-ingress
-# helm install nginx-controller nginx-stable/nginx-ingress --set controller.service.type=NodePort --set controller.service.httpPort.nodePort=30080 --set controller.service.httpsPort.nodePort=30443
+# helm install nginx-controller stable/nginx-ingress --set controller.service.type=NodePort --set controller.service.httpPort.nodePort=30080 --set controller.service.httpsPort.nodePort=30443  --set defaultBackend.enabled=false
 
 2. 暴露端口80
 # kubectl expose deployment nginx-controller-nginx-ingress --port 80 --external-ip 124.250.245.149
@@ -20,3 +20,27 @@ data:
   server-name-hash-bucket-size: "256"
 
 ...
+
+
+4. 解决ingress-nginx cors问题
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: flask-ingress
+  namespace: jenkins
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "http://cmdb.21vianet.com"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS, DELETE"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,X-CustomHeader,X-LANG,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,X-Api-Key,X-Device-Id,Access-Control-Allow-Origin"
+spec:
+  rules:
+  - host: flask.21vianet.com
+    http:
+      paths:
+      - backend:
+          serviceName: flasknode
+          servicePort: 8000
+
