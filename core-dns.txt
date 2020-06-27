@@ -1,0 +1,2 @@
+1. DNS服务监控Kubernetes API，为每一个Service创建DNS记录用于域名解析。
+<service-name>.<namespace-name>.svc.cluster.local

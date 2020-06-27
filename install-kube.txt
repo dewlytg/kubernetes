@@ -1,0 +1,45 @@
+1. 安装docker
+# wget https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo -O/etc/yum.repos.d/docker-ce.repo
+# yum -y install docker-ce-18.06.1.ce-3.el7
+#  systemctl start docker
+#  docker info
+#  sysctl -w net.ipv4.ip_forward=1
+#  cat <<EOF >  /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+
+#  sysctl --system
+
+2. 安装kubernetes
+#  cat > /etc/yum.repos.d/kubernetes.repo <<EOF
+[kubernetes]
+name=Kubernetes
+baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=0
+repo_gpgcheck=0
+EOF
+
+## 注意这里要指定kubernetes-version，因为阿里云repository里面可能没有最新的kubernetes版本，亲测过，apiserver-advertise-address为kubernetes服务器IP
+#  yum install kubectl kubelet kubeadm
+#  systemctl enable kubelet
+#  systemctl daemon-reload
+#  systemctl start kubelet
+#  journalctl  -f
+#  kubeadm init --kubernetes-version=1.18.0  --apiserver-advertise-address=124.250.245.149   --image-repository registry.aliyuncs.com/google_containers  --service-cidr=10.10.0.0/16 --pod-network-cidr=10.122.0.0/16
+
+
+3. 安装网络组件，否则core-dns服务无法启动，也无法和其他pod通讯
+# kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+
+4. 查看pods状态
+# kubectl get pods -n kube-system
+
+5. 会发现有的pod一直处于pending状态，因为我们目前只有一个master节点，master节点存在taint，pod 无法toleration，请去掉taint即可
+# kubectl taint nodes --all node-role.kubernetes.io/master-
+# kubectl taint nodes --all node.kubernetes.io/not-ready-
+
+6. 查看集群状态
+# kubectl get cs
+# kubectl get pods -n kube-system

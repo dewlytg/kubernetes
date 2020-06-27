@@ -1,0 +1,28 @@
+1. helm 安装Jenkins，先声明一个pvc，The time may be longgg. please waiting...
+# helm install jenkins stable/jenkins  --set persistence.existingClaim=jenkins-pvc --namespace jenkins
+
+2. 安装kubernetes插件，在全局配置--->Cloud--->http://jenkins.21vianet.com/configureClouds/
+ 	Kubernetes 地址  https://kubernetes.default.svc.cluster.local
+        Jenkins 地址 http://jenkins2.jenkins.:8080
+        添加一个pod template
+        名称 test-jnlp
+        命名空间 jenkins
+        标签列表  test-jnlp
+        用法 尽可能使用这个节点
+        容器列表
+        名称 jnlp
+        镜像 cnych/jenkins:jnlp6 用其他版本貌似报错
+        工作目录 /home/jenkins/agent
+        卷
+        jenkins-slave pod 中没有docker 命令
+        Host Path Volumn
+        主机路径 /var/run/docker.sock 
+        挂载路径 /var/run/docker.sock
+
+        因为没有dns解析，所以这里用本地hosts，如果加了解析，请去掉
+        Host Path Volumn 
+        主机路径 /etc/hosts
+        挂载路径 /etc/hosts
+        
+	系统账号，用于创建资源
+        Service Account	jenkins2

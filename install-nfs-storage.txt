@@ -1,0 +1,41 @@
+1. 部署自定义storageClass
+#helm install nfs-client-provisioner   --set storageClass.name=nfs-client   --set storageClass.defaultClass=true   --set nfs.server=124.250.245.149   --set nfs.path=/data/pv   apphub/nfs-client-provisioner
+
+2. 安装nfs服务
+# yum -y install nfs
+# vim /etc/exports 
+/data/pv *(insecure,rw,async,no_root_squash)
+
+3. 启动服务
+# systemctl reload daemon
+# systemctl restart nfs
+
+4. 如果有firewall服务，开启111端口
+# firewall-cmd --permanent --add-port=111/tcp
+# firewall-cmd --reload
+
+5. 查看custom sc 是否正常
+# helm list
+...
+  nfs-client-provisioner	default  	1       	2020-06-22 17:09:24.126895918 +0800 CST	deployed	nfs-client-provisioner-1.2.8	3.1.0 
+...
+
+# kubectl get pods
+...
+  nfs-client-provisioner-7745c8954c-q67b5   1/1     Running     0          15h
+...
+
+
+6. 定义pvc，调用custom sc
+# vim test-pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitlab-redis-pvc
+spec:
+  storageClassName: "nfs-client"
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
