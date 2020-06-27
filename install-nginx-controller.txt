@@ -44,3 +44,6 @@ spec:
           serviceName: flasknode
           servicePort: 8000
 
+
+5. 解决vue 页面刷新404 的问题
+  try_files $uri $uri/ /index.html;
