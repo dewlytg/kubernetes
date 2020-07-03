@@ -69,7 +69,7 @@ spec:
         - name: GITLAB_BACKUP_SCHEDULE
           value: daily
         - name: GITLAB_BACKUP_TIME
-          value: 01:00
+          value: 11:05
         - name: DB_TYPE
           value: postgres
         - name: DB_HOST
@@ -94,6 +94,10 @@ spec:
         volumeMounts:
         - mountPath: /home/git/data
           name: data
+        - mountPath: /home/git/data/backups
+          name: backup
+        - mountPath: /etc/localtime
+          name: local-time
         livenessProbe:
           httpGet:
             path: /
@@ -110,6 +114,12 @@ spec:
       - name: data
         persistentVolumeClaim:
           claimName: gitlab-pvc
+      - name: local-time
+        hostPath:
+          path: /etc/localtime
+      - name: backup
+        hostPath:
+          path: /data/kubernetes/gitlab/backup
 ---
 apiVersion: v1
 kind: Service

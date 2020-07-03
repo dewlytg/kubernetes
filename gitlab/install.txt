@@ -1,1 +1,10 @@
+1. 创建gitlab 登录账号
 # kubectl create secret generic db-user-pass --from-file=./username --from-file=./password -n k8s-gitlab
+
+
+2. 登录gitlab 
+# cd /home/git/gitlab
+# bundle exec rake gitlab:backup:restore RAILS_ENV=production BACKUP=1593744753_2020_07_03_12.1.6
+
+
+

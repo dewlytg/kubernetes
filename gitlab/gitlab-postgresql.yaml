@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: postgresql
-        image: sameersbn/postgresql
+        image: sameersbn/postgresql:10-1
         imagePullPolicy: IfNotPresent
         env:
         - name: DB_USER
