@@ -1,3 +1,5 @@
+# cluster-issuer-letsencrypt-staging.yaml
+
 apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
 metadata:
@@ -5,7 +7,7 @@ metadata:
 spec:
   acme:
     # 务必将此处替换为你自己的邮箱, 否则会配置失败。当证书快过期时 Let's Encrypt 会与你联系
-    email: user@example.com
+    email: dewly_tg@163.com
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       # 将用来存储 Private Key 的 Secret 资源

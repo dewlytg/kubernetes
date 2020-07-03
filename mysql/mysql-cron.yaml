@@ -33,4 +33,4 @@ spec:
               command:
                 - "sh"
                 - "/var/db/script/mysqldump.sh"
-  schedule: "*/1 9 * * *"
+  schedule: "23 0 * * *"
