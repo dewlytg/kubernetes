@@ -1,0 +1,56 @@
+# 获取namespace的详情信息
+$ kubectl  get ns rdbms  -o json > rdbms.json
+
+# 查看napespace定义的json配置
+## 删除掉spec部分即可
+$ cat rdbms.json
+{
+    "apiVersion": "v1",
+    "kind": "Namespace",
+    "metadata": {
+        "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Namespace\",\"metadata\":{\"annotations\":{},\"name\":\"rdbms\"}}\n"
+        },
+        "creationTimestamp": "2019-10-14T12:17:44Z",
+        "deletionTimestamp": "2019-10-14T12:30:27Z",
+        "name": "rdbms",
+        "resourceVersion": "8844754",
+        "selfLink": "/api/v1/namespaces/rdbms",
+        "uid": "29067ddf-56d7-4cce-afa3-1fbdbb221ab1"
+    },
+    "spec": {
+        "finalizers": [
+            "kubernetes"
+        ]
+    },
+    "status": {
+        "phase": "Terminating"
+    }
+}
+
+# 使用http接口进行删除
+$ curl -k -H "Content-Type:application/json" -X PUT --data-binary @rdbms.json https://x.x.x.x:6443/api/v1/namespaces/rdbms/finalize
+{
+  "kind": "Namespace",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "rdbms",
+    "selfLink": "/api/v1/namespaces/rdbms/finalize",
+    "uid": "29067ddf-56d7-4cce-afa3-1fbdbb221ab1",
+    "resourceVersion": "8844754",
+    "creationTimestamp": "2019-10-14T12:17:44Z",
+    "deletionTimestamp": "2019-10-14T12:30:27Z",
+    "annotations": {
+      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Namespace\",\"metadata\":{\"annotations\":{},\"name\":\"rdbms\"}}\n"
+    }
+  },
+  "spec": {
+
+  },
+  "status": {
+    "phase": "Terminating"
+  }
+
+# 再次查看namespace发现已经被删除了
+$ kubectl  get ns  | grep rdb
+

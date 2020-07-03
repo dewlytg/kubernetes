@@ -1,0 +1,18 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: dashboard-imroc-io
+  namespace: istio-system
+spec:
+  secretName: dashboard-imroc-io
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - istio.kiali.com
+  acme:
+    config:
+    - http01:
+        ingressClass: nginx
+      domains:
+      - istio.kiali.com

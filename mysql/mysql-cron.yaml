@@ -1,0 +1,36 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name:  mysqldump
+  namespace: mysql
+spec:
+  jobTemplate:
+    spec:
+      completions: 1
+      template:
+        spec:
+          restartPolicy: Never
+          volumes:
+            - name: mysql-master-script
+              hostPath:
+                path: /data/kubernetes/mysql/shell
+            - name: mysql-master-backup
+              hostPath:
+                path: /data/kubernetes/mysql/backup
+            - name: local-time
+              hostPath:
+                path: /etc/localtime
+          containers:
+            - name: mysqldump-container
+              image: nacos/nacos-mysql-master:latest
+              volumeMounts:
+                - name: mysql-master-script
+                  mountPath: /var/db/script
+                - name: local-time
+                  mountPath: /etc/localtime
+                - name: mysql-master-backup
+                  mountPath: /var/db/backup
+              command:
+                - "sh"
+                - "/var/db/script/mysqldump.sh"
+  schedule: "*/1 9 * * *"

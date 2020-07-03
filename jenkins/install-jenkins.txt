@@ -1,9 +1,7 @@
-1. helm 安装Jenkins，先声明一个pvc，The time may be longgg. please waiting...
-# helm install jenkins stable/jenkins  --set persistence.existingClaim=jenkins-pvc --namespace jenkins
 
-2. 安装kubernetes插件，在全局配置--->Cloud--->http://jenkins.21vianet.com/configureClouds/
+1. 安装kubernetes插件，在全局配置--->Cloud--->http://jenkins.21vianet.com/configureClouds/
  	Kubernetes 地址  https://kubernetes.default.svc.cluster.local
-        Jenkins 地址 http://jenkins2.jenkins.:8080
+        Jenkins 地址 http://jenkins2.jenkins:8080
         添加一个pod template
         名称 test-jnlp
         命名空间 jenkins
@@ -26,3 +24,27 @@
         
 	系统账号，用于创建资源
         Service Account	jenkins2
+
+2. 如果出现jenkins-slave 上线的时候报错,请查看jenkins master对于的pod日志
+   # kubectl logs -f jenkins2-xxxx -n jenkins
+
+
+3. jenkins 安装插件慢的问题,目前解决这个问题不管是k8s还是传统部署这些配置都要去工作目录去修改,将这个https,换成http
+   # cd /var/jenkins_home
+   # vim hudson.model.UpdateCenter.xml 
+<?xml version='1.1' encoding='UTF-8'?>
+<sites>
+  <site>
+    <id>default</id>
+    <url>http://updates.jenkins.io/update-center.json</url>
+  </site>
+
+  
+
+   # cd /var/jenkins_home/updates
+   # sed -i 's/http:\/\/updates.jenkins-ci.org\/download/https:\/\/mirrors.tuna.tsinghua.edu.cn\/jenkins/g' default.json && \
+sed -i 's/http:\/\/www.google.com/https:\/\/www.baidu.com/g' default.json
+
+
+   # kubectl delete jenkins-master-xxx -n jenkins
+    ... 重启加载配置
