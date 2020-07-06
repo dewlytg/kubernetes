@@ -58,6 +58,18 @@ spec:
        #   value: dewly_tg@163.com
         - name: GITLAB_HOST
           value: gitlab.21vianet.com
+        #- name: GITLAB_HTTPS
+        #  value: "true"
+        #- name: SSL_SELF_SIGNED
+        #  value: "true"
+        #- name: SSL_CERTIFICATE_PATH
+        #  value: "/home/git/data/certs/gitlab.crt"
+        #- name: SSL_KEY_PATH
+        #  value: "/home/git/data/certs/gitlab.key"
+        #- name: SSL_DHPARAM_PATH
+        #  value: "/home/git/data/certs/dhparam.pem"
+        #- name: GITLAB_PORT
+        #  value: "443"
         - name: GITLAB_PORT
           value: "80"
         - name: GITLAB_SSH_PORT
