@@ -6,5 +6,13 @@
 # cd /home/git/gitlab
 # bundle exec rake gitlab:backup:restore RAILS_ENV=production BACKUP=1593744753_2020_07_03_12.1.6
 
+3. 修改root密码
+shell>cd /home/git/gitlab
+shell> su git
+shell>bundle exec rails console production
+irb(main):007:0> user = User.where(email: 'admin@local.host').first //email 为gitlabuser 账户，我的是默认的管理员账户
+irb(main):007:0>user.password = 'yourpassword'   //密码必须至少8个字符
+irb(main):007:0>user.save!  // 如没有问题 返回true
+irb(main):007:0>quit
 
 
