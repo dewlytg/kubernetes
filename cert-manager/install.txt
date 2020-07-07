@@ -87,7 +87,9 @@ spec:
 
 
 
-# 验证
+# 验证，查看证书状态十分Ready
 
 # kubectl get issuer
 # kubectl get certificate 
+# kubectl describe certificate 
+
