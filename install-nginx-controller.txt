@@ -1,8 +1,8 @@
 1. nginx-controller服务其实就是kubernetes中的nginx，可以完成代理工作，创建完不同的服务，必须创建nignx-ingress
 # helm install nginx-controller stable/nginx-ingress --set controller.service.type=NodePort --set controller.service.httpPort.nodePort=30080 --set controller.service.httpsPort.nodePort=30443  --set defaultBackend.enabled=false
 
-2. 暴露端口80
-# kubectl expose deployment nginx-controller-nginx-ingress-controller --port 80 --external-ip 124.250.245.149
+2. 暴露端口80和443，先安装cert-manager
+# kubectl expose deployment nginx-controller-nginx-ingress-controller --port 80,443 --external-ip 124.250.245.149
 
 3. 413 错误，提示body too length
 # kubectl eidt cm  nginx-controller-nginx-ingress
