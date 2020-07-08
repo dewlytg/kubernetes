@@ -1,0 +1,17 @@
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: test-api-tls
+  #保持和ingress处于相同的ns
+  namespace: jenkins
+spec:
+  secretName: test-api-tls
+  duration: 2160h
+  renewBefore: 360h
+  dnsNames:
+  #自定义域名
+  - test-api.21nmc.com
+  issuerRef:
+    #指定名为letsencrypt-prod的Issuer
+    name: letsencrypt-prod

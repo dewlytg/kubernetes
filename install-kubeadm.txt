@@ -66,3 +66,11 @@ EOF
 
 8. 暴露80端口
 # kubectl expose deployment nginx-controller-nginx-ingress-controller --port 80 --external-ip 124.250.245.149
+
+
+9. 如果出现下面错误 , 【The connection to the server localhost:8080 was refused - did you specify the right host or port?】
+
+# ll /etc/kubernetes/admin.conf
+# echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> ~/.bash_profile
+# source ~/.bash_profile
+# kubectl get pods --all-namespaces

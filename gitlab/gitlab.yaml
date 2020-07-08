@@ -160,7 +160,7 @@ metadata:
   name: gitlab
   namespace: k8s-gitlab
   annotations:
-    kubernetes.io/ingress.class: nginx
+    kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
   - host: gitlab.21vianet.com
