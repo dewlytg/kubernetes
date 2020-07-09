@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: pv001
+  name: mypv001
 spec:
   capacity:
     storage: 10Gi
@@ -9,4 +9,4 @@ spec:
     - ReadWriteMany
   nfs:
     path: /data/volumes/v1
-    server: localhost
+    server: 172.16.115.168

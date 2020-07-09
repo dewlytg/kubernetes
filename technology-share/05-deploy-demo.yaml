@@ -5,6 +5,10 @@ metadata:
   namespace: default
 spec:
   replicas: 3
+  strategy:
+    rollingUpdate:
+      maxSurge: 1  #每次更新一个pod
+      maxUnavailable: 0  #最大不可用pod为0
   selector:
     matchLabels:
       app: myapp

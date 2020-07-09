@@ -1,3 +1,4 @@
+#Headless Service
 apiVersion: v1
 kind: Service
 metadata:
@@ -45,4 +46,4 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: 5Gi
+          storage: 10Gi

@@ -29,6 +29,33 @@ EOF
 #  journalctl  -f
 #  kubeadm init --kubernetes-version=1.17.0  --apiserver-advertise-address=124.250.245.149   --image-repository registry.aliyuncs.com/google_containers  --service-cidr=10.10.0.0/16 --pod-network-cidr=10.122.0.0/16
 
+...
+成功初始化以后，会出现下面提示信息。。。
+
+Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 124.250.245.149:6443 --token s0ah90.4cg0bej2npxs8vfu \
+    --discovery-token-ca-cert-hash sha256:d1e6e48c9b8f511e30a66c220e3ff6931feb61bbe9ba7a0f5a03883b150d336e
+...
+
+
+# 请执行下面操作，否则kubernetes无法正常使用
+#  mkdir -p $HOME/.kube
+#  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+#  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
 
 3. 安装网络组件，否则core-dns服务无法启动，也无法和其他pod通讯
 # kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
@@ -67,10 +94,3 @@ EOF
 8. 暴露80端口
 # kubectl expose deployment nginx-controller-nginx-ingress-controller --port 80 --external-ip 124.250.245.149
 
-
-9. 如果出现下面错误 , 【The connection to the server localhost:8080 was refused - did you specify the right host or port?】
-
-# ll /etc/kubernetes/admin.conf
-# echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> ~/.bash_profile
-# source ~/.bash_profile
-# kubectl get pods --all-namespaces
