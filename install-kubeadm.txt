@@ -22,7 +22,7 @@ repo_gpgcheck=0
 EOF
 
 ## 注意这里要指定kubernetes-version，因为阿里云repository里面可能没有最新的kubernetes版本，亲测过，apiserver-advertise-address为kubernetes服务器IP
-#  yum install -y kubelet-1.17.2-0.x86_64 kubeadm-1.17.2-0.x86_64 kubelet-1.17.2-0.x86_64
+#  yum install -y kubelet-1.17.2-0.x86_64 kubeadm-1.17.2-0.x86_64 kubectl-1.17.2-0.x86_64
 #  systemctl enable kubelet
 #  systemctl daemon-reload
 #  systemctl start kubelet
@@ -94,3 +94,6 @@ kubeadm join 124.250.245.149:6443 --token s0ah90.4cg0bej2npxs8vfu \
 8. 暴露80端口
 # kubectl expose deployment nginx-controller-nginx-ingress-controller --port 80 --external-ip 124.250.245.149
 
+
+9. kubernetes get nodes roles none
+# kubectl label node k8s-node01 node-role.kubernetes.io/worker=node

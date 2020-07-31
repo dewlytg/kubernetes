@@ -1,0 +1,12 @@
+1. 开启转发端口
+# kubectl port-forward --namespace redis svc/redis-master 6379:6379 --address 0.0.0.0 &
+
+
+2. 配置防火墙
+# firewall-cmd --permanent --add-rich-rule="rule family="ipv4" source address="211.151.207.195" port protocol="tcp" port="6379" accept"
+# firewall-cmd --reload
+# firewall-cmd --list-rich-rules
+
+...
+# rule family="ipv4" source address="211.151.207.195" port port="6379" protocol="tcp" accep
+...
