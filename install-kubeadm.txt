@@ -1,18 +1,27 @@
 1. 安装docker
 # wget https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo -O/etc/yum.repos.d/docker-ce.repo
 # yum -y install docker-ce-18.06.1.ce-3.el7
-#  systemctl start docker
-#  docker info
-#  sysctl -w net.ipv4.ip_forward=1
-#  cat <<EOF >  /etc/sysctl.d/k8s.conf
+# systemctl start docker
+# systemctl enable docker
+# docker info
+# vim /etc/docker/daemon.json
+ registry-mirrors为阿里云镜像仓库
+ insecure-registries当去私服registry下载镜像的时候可以不用https
+{
+    "registry-mirrors": ["https://ys1k0cd5.mirror.aliyuncs.com"],
+    "insecure-registries":["repo.21vianet.com"]
+}
+
+# sysctl -w net.ipv4.ip_forward=1
+# cat <<EOF >  /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
 EOF
 
-#  sysctl --system
+# sysctl --system
 
 2. 安装kubernetes
-#  cat > /etc/yum.repos.d/kubernetes.repo <<EOF
+# cat > /etc/yum.repos.d/kubernetes.repo <<EOF
 [kubernetes]
 name=Kubernetes
 baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
@@ -22,12 +31,11 @@ repo_gpgcheck=0
 EOF
 
 ## 注意这里要指定kubernetes-version，因为阿里云repository里面可能没有最新的kubernetes版本，亲测过，apiserver-advertise-address为kubernetes服务器IP
-#  yum install -y kubelet-1.17.2-0.x86_64 kubeadm-1.17.2-0.x86_64 kubectl-1.17.2-0.x86_64
-#  systemctl enable kubelet
-#  systemctl daemon-reload
-#  systemctl start kubelet
-#  journalctl  -f
-#  kubeadm init --kubernetes-version=1.17.0  --apiserver-advertise-address=124.250.245.149   --image-repository registry.aliyuncs.com/google_containers  --service-cidr=10.10.0.0/16 --pod-network-cidr=10.122.0.0/16
+# yum install -y kubelet-1.17.2-0.x86_64 kubeadm-1.17.2-0.x86_64 kubectl-1.17.2-0.x86_64
+# systemctl enable kubelet
+# systemctl daemon-reload
+# systemctl start kubelet
+# kubeadm init --kubernetes-version=1.17.0  --apiserver-advertise-address=124.250.245.149   --image-repository registry.aliyuncs.com/google_containers  --service-cidr=10.10.0.0/16 --pod-network-cidr=10.122.0.0/16
 
 ...
 成功初始化以后，会出现下面提示信息。。。
@@ -52,13 +60,22 @@ kubeadm join 124.250.245.149:6443 --token s0ah90.4cg0bej2npxs8vfu \
 
 
 # 请执行下面操作，否则kubernetes无法正常使用
-#  mkdir -p $HOME/.kube
-#  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-#  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+# mkdir -p $HOME/.kube
+# sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+# sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 
 3. 安装网络组件，否则core-dns服务无法启动，也无法和其他pod通讯
-# kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+# wget https://docs.projectcalico.org/manifests/calico.yaml
+# vim calico.yaml
+修改image镜像源为公司内部registry，repo.21vianet.com，总共有四处需要修改，如下：
+          image: repo.21vianet.com/calico/cni:v3.15.1
+          image: repo.21vianet.com/calico/cni:v3.15.1
+          image: repo.21vianet.com/calico/pod2daemon-flexvol:v3.15.1
+          image: repo.21vianet.com/calico/node:v3.15.1
+          image: repo.21vianet.com/calico/kube-controllers:v3.15.1
+
+
 
 4. 查看pods状态
 # kubectl get pods -n kube-system
@@ -67,9 +84,12 @@ kubeadm join 124.250.245.149:6443 --token s0ah90.4cg0bej2npxs8vfu \
 # kubectl taint nodes --all node-role.kubernetes.io/master-
 # kubectl taint nodes --all node.kubernetes.io/not-ready-
 
-6. 查看集群状态
+6. 查看状态
 # kubectl get cs
 # kubectl get pods -n kube-system
+[root@k8s-master01 ~]# kubectl get nodes
+NAME           STATUS   ROLES    AGE     VERSION
+k8s-master01   Ready    master   9m56s   v1.17.2
 
 7. 添加cronjob的时候会出现timezone的问，请进入/etc/kubernetes/mainfests/ 目录修改master上对应的4个服务，etcd，api，scheduler，controller
 挂载本地/etc/localtime 到 pod中去
