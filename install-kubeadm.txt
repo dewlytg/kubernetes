@@ -91,7 +91,7 @@ kubeadm join 124.250.245.149:6443 --token s0ah90.4cg0bej2npxs8vfu \
 NAME           STATUS   ROLES    AGE     VERSION
 k8s-master01   Ready    master   9m56s   v1.17.2
 
-7. 添加cronjob的时候会出现timezone的问，请进入/etc/kubernetes/mainfests/ 目录修改master上对应的4个服务，etcd，api，scheduler，controller
+7. 添加cronjob的时候会出现timezone的问，请进入/etc/kubernetes/manifests/ 目录修改master上对应的4个服务，etcd，api，scheduler，controller
 挂载本地/etc/localtime 到 pod中去
 
 ...
