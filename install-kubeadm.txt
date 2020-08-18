@@ -92,7 +92,7 @@ NAME           STATUS   ROLES    AGE     VERSION
 k8s-master01   Ready    master   9m56s   v1.17.2
 
 7. 添加cronjob的时候会出现timezone的问，请进入/etc/kubernetes/manifests/ 目录修改master上对应的4个服务，etcd，api，scheduler，controller
-挂载本地/etc/localtime 到 pod中去
+挂载本地/etc/localtime 到 pod中去，注意：修改完后，千万不要重新apply配置，只需要充值kubelet即可...
 
 ...
   volumes:
@@ -109,11 +109,7 @@ k8s-master01   Ready    master   9m56s   v1.17.2
 
 # systemctl restart kubelet
 # kubectl get cs
-
-
-8. 暴露80端口
-# kubectl expose deployment nginx-controller-nginx-ingress-controller --port 80 --external-ip 124.250.245.149
-
-
-9. kubernetes get nodes roles none
-# kubectl label node k8s-node01 node-role.kubernetes.io/worker=node
+NAME                 STATUS    MESSAGE             ERROR
+scheduler            Healthy   ok                  
+controller-manager   Healthy   ok                  
+etcd-0               Healthy   {"health":"true"} 
